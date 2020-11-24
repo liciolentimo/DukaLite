@@ -1,7 +1,8 @@
-package com.lentimosystems.dukalite
+package com.lentimosystems.dukalite.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.lentimosystems.dukalite.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

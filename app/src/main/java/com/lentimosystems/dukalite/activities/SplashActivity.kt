@@ -1,4 +1,4 @@
-package com.lentimosystems.dukalite
+package com.lentimosystems.dukalite.activities
 
 import android.content.Intent
 import android.os.Build
@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.WindowInsets
 import android.view.WindowManager
+import com.lentimosystems.dukalite.R
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,5 +31,8 @@ class SplashActivity : AppCompatActivity() {
             },
             3000
         )
+
+//        val typeface: Typeface = Typeface.createFromAsset(assets,"Montserrat-Bold.ttf")
+//        tv_app_name.typeface = typeface
     }
 }

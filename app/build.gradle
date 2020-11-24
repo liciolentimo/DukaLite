@@ -9,6 +9,10 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.1"
 
+//    viewBinding {
+//        enabled = true
+//    }
+
     defaultConfig {
         applicationId "com.lentimosystems.dukalite"
         minSdkVersion 23
