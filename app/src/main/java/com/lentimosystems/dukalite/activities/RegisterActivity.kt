@@ -9,6 +9,10 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.Toolbar
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.lentimosystems.dukalite.R
 import com.lentimosystems.dukalite.utils.DukaLiteButton
 import com.lentimosystems.dukalite.utils.DukaLiteEditText
@@ -55,7 +59,7 @@ class RegisterActivity : BaseActivity() {
             finish()
         }
         btn_register!!.setOnClickListener{
-            validateRegisterDetails()
+            registerUser()
         }
     }
 
@@ -98,9 +102,26 @@ class RegisterActivity : BaseActivity() {
                 showErrorSnackBar(resources.getString(R.string.err_msg_agree_terms_conditions),true)
                 false
             } else -> {
-                showErrorSnackBar("Success!",false)
+                //showErrorSnackBar("Success!",false)
                 true
             }
+        }
+    }
+
+    private fun registerUser(){
+        if (validateRegisterDetails()){
+            val email: String = et_email?.text.toString().trim{it <= ' '}
+            val password: String = et_password?.text.toString().trim{it <= ' '}
+
+            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(OnCompleteListener<AuthResult>{ task ->
+                    if (task.isSuccessful){
+                        val firebaseUser: FirebaseUser = task.result!!.user!!
+                        showErrorSnackBar("Registration successful! Your user id is ${firebaseUser.uid}",false)
+                    } else {
+                        showErrorSnackBar(task.exception!!.message.toString(),true)
+                    }
+                })
         }
     }
 }
