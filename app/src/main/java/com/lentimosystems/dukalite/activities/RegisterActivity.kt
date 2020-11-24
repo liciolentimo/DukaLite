@@ -122,6 +122,9 @@ class RegisterActivity : BaseActivity() {
                     if (task.isSuccessful){
                         val firebaseUser: FirebaseUser = task.result!!.user!!
                         showErrorSnackBar("Registration successful! Your user id is ${firebaseUser.uid}",false)
+
+                        FirebaseAuth.getInstance().signOut()
+                        finish()
                     } else {
                         showErrorSnackBar(task.exception!!.message.toString(),true)
                     }
