@@ -13,6 +13,7 @@
     <color name="yellow">#FFEB3B</color>
     <color name="primaryText">#222934</color>
     <color name="secondaryText">#989898</color>
+    <color name="snackBarerror">#c62828</color>
 <!--    <color name="blue">#1976D2</color>-->
 <!--    <color name="colorOrange">#EF6C00</color>-->
 </resources>
