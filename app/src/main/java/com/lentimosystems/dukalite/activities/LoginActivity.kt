@@ -12,13 +12,9 @@ import android.view.WindowManager
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.lentimosystems.dukalite.R
-import com.lentimosystems.dukalite.databinding.ActivityLoginBinding
 import com.lentimosystems.dukalite.firestore.FireStoreClass
 import com.lentimosystems.dukalite.models.User
-import com.lentimosystems.dukalite.utils.DukaLiteButton
-import com.lentimosystems.dukalite.utils.DukaLiteEditText
-import com.lentimosystems.dukalite.utils.DukaLiteTextView
-import com.lentimosystems.dukalite.utils.DukaLiteTextViewBold
+import com.lentimosystems.dukalite.utils.*
 
 class LoginActivity : BaseActivity(), View.OnClickListener {
     //private lateinit var binding: ActivityLoginBinding
@@ -69,6 +65,7 @@ tv_register!!.setOnClickListener{
 //        startActivity(intent)
         if (user.profileCompleted == 0){
             val intent = Intent(this@LoginActivity,UserProfileActivity::class.java)
+            intent.putExtra(Constants.EXTRA_USER_DETAILS,user)
             startActivity(intent)
         } else {
             val intent = Intent(this@LoginActivity,MainActivity::class.java)
