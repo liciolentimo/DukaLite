@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -12,6 +13,8 @@ import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.lentimosystems.dukalite.R
 import com.lentimosystems.dukalite.databinding.ActivityLoginBinding
+import com.lentimosystems.dukalite.firestore.FireStoreClass
+import com.lentimosystems.dukalite.models.User
 import com.lentimosystems.dukalite.utils.DukaLiteButton
 import com.lentimosystems.dukalite.utils.DukaLiteEditText
 import com.lentimosystems.dukalite.utils.DukaLiteTextView
@@ -54,6 +57,18 @@ tv_register!!.setOnClickListener{
         btn_login!!.setOnClickListener(this)
 
     }
+
+    fun userLoggedInSuccess(user: User){
+        hideProgressDialog()
+
+        Log.i("First Name: ", user.firstName)
+        Log.i("Last Name: ", user.lastName)
+        Log.i("Email: ", user.email)
+
+        val intent = Intent(this@LoginActivity,MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
     override fun onClick(v : View?){
         if (v != null){
             when(v.id){
@@ -91,11 +106,13 @@ tv_register!!.setOnClickListener{
 
             FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password)
                 .addOnCompleteListener {task ->
-                    hideProgressDialog()
+                    //hideProgressDialog()
 
                     if (task.isSuccessful){
-                        showErrorSnackBar("Success!",false)
+                        FireStoreClass().getUserDetails(this@LoginActivity)
+                        //showErrorSnackBar("Success!",false)
                     } else {
+                        hideProgressDialog()
                         showErrorSnackBar(task.exception!!.message.toString(),true)
                     }
                 }
