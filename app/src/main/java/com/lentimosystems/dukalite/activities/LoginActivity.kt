@@ -65,8 +65,15 @@ tv_register!!.setOnClickListener{
         Log.i("Last Name: ", user.lastName)
         Log.i("Email: ", user.email)
 
-        val intent = Intent(this@LoginActivity,MainActivity::class.java)
-        startActivity(intent)
+//        val intent = Intent(this@LoginActivity,MainActivity::class.java)
+//        startActivity(intent)
+        if (user.profileCompleted == 0){
+            val intent = Intent(this@LoginActivity,UserProfileActivity::class.java)
+            startActivity(intent)
+        } else {
+            val intent = Intent(this@LoginActivity,MainActivity::class.java)
+            startActivity(intent)
+        }
         finish()
     }
     override fun onClick(v : View?){
