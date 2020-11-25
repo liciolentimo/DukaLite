@@ -24,4 +24,7 @@
     <string name="err_msg_password_confirm_password_mismatch">Password and confirm password do not match</string>
     <string name="err_msg_agree_terms_conditions">Please agree to the Terms and Conditions</string>
     <string name="please_wait">Please Wait&#8230;</string>
+    <string name="title_forgot_password">FORGOT PASSWORD?</string>
+    <string name="forgot_password_title_description">Enter your username and email address and we\'ll send you an email to reset your password</string>
+    <string name="btn_lbl_submit">Submit</string>
 </resources>
