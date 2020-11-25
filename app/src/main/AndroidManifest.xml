@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DukaLite">
         <activity android:name=".activities.UserProfileActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
         <activity
             android:name=".activities.ForgotPasswordActivity"
             android:screenOrientation="portrait"
