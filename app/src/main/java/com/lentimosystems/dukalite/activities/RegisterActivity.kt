@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.Toolbar
 import com.google.android.gms.tasks.OnCompleteListener
@@ -14,6 +15,8 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.lentimosystems.dukalite.R
+import com.lentimosystems.dukalite.firestore.FireStoreClass
+import com.lentimosystems.dukalite.models.User
 import com.lentimosystems.dukalite.utils.DukaLiteButton
 import com.lentimosystems.dukalite.utils.DukaLiteEditText
 import com.lentimosystems.dukalite.utils.DukaLiteTextViewBold
@@ -118,18 +121,34 @@ class RegisterActivity : BaseActivity() {
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(OnCompleteListener<AuthResult>{ task ->
 
-                    hideProgressDialog()
+                    //hideProgressDialog()
 
                     if (task.isSuccessful){
                         val firebaseUser: FirebaseUser = task.result!!.user!!
-                        showErrorSnackBar("Registration successful! Your user id is ${firebaseUser.uid}",false)
 
-                        FirebaseAuth.getInstance().signOut()
-                        finish()
+                        val user = User(
+                            firebaseUser.uid,
+                            et_first_name?.text.toString().trim{it <= ' '},
+                            et_last_name?.text.toString().trim{it <= ' '},
+                            et_email?.text.toString().trim{it <= ' '}
+                        )
+
+                        FireStoreClass().registerUser(this@RegisterActivity,user)
+                        //showErrorSnackBar("Registration successful! Your user id is ${firebaseUser.uid}",false)
+
+//                        FirebaseAuth.getInstance().signOut()
+//                        finish()
                     } else {
+                        hideProgressDialog()
                         showErrorSnackBar(task.exception!!.message.toString(),true)
                     }
                 })
         }
+    }
+    fun userRegistrationSuccess(){
+        hideProgressDialog()
+
+        Toast.makeText(this@RegisterActivity,resources.getString(R.string.register_success),
+        Toast.LENGTH_SHORT).show()
     }
 }
