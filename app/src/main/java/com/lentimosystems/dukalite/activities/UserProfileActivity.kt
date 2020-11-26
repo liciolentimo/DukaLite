@@ -4,10 +4,12 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -20,14 +22,15 @@ import kotlinx.android.synthetic.main.activity_user_profile.*
 import java.io.IOException
 
 class UserProfileActivity : BaseActivity(), View.OnClickListener {
-    //var et_first_name: DukaLiteEditText? = null
+    private lateinit var iv_user_photo: ImageView
     private lateinit var mUserDetails: User
+    private var mSelectedImageFileUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
 
-        //et_first_name = findViewById(R.id.et_first_name) as DukaLiteEditText
+        iv_user_photo = findViewById(R.id.iv_user_photo) as ImageView
 
 
         if (intent.hasExtra(Constants.EXTRA_USER_DETAILS)){
@@ -68,24 +71,28 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
                 }
 
                 R.id.btn_submit -> {
-                    if (validateUserProfileDetails()){
-                        //showErrorSnackBar("Details updated successfully!",false)
-                        val userHashMap = HashMap<String,Any>()
-                        val mobileNumber = et_mobile_number.text.toString().trim { it <= ' ' }
-                        val gender = if (rb_male.isChecked){
-                            Constants.MALE
-                        } else {
-                            Constants.FEMALE
-                        }
-                        if (mobileNumber.isNotEmpty()){
-                            userHashMap[Constants.MOBILE] = mobileNumber.toLong()
-                        }
-                        userHashMap[Constants.GENDER] = gender
 
-                        showProgressDialog(resources.getString(R.string.please_wait))
+                    showProgressDialog(resources.getString(R.string.please_wait))
+                    FireStoreClass().uploadImageToCloudStorage(this, mSelectedImageFileUri)
 
-                        FireStoreClass().updateUserProfileData(this, userHashMap)
-                    }
+//                    if (validateUserProfileDetails()){
+//                        //showErrorSnackBar("Details updated successfully!",false)
+//                        val userHashMap = HashMap<String,Any>()
+//                        val mobileNumber = et_mobile_number.text.toString().trim { it <= ' ' }
+//                        val gender = if (rb_male.isChecked){
+//                            Constants.MALE
+//                        } else {
+//                            Constants.FEMALE
+//                        }
+//                        if (mobileNumber.isNotEmpty()){
+//                            userHashMap[Constants.MOBILE] = mobileNumber.toLong()
+//                        }
+//                        userHashMap[Constants.GENDER] = gender
+//
+//                        showProgressDialog(resources.getString(R.string.please_wait))
+//
+//                        FireStoreClass().updateUserProfileData(this, userHashMap)
+//                    }
                 }
             }
         }
@@ -119,9 +126,9 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
             if (resultCode == Constants.PICK_IMAGE_REQUEST_CODE) {
                 if (data != null){
                     try {
-                        val selectedImageFileUri = data.data!!
+                        mSelectedImageFileUri = data.data!!
                         //iv_user_photo.setImageURI(selectedImageFileUri)
-                        GlideLoader(this).loadUserPicture(selectedImageFileUri,iv_user_photo)
+                        GlideLoader(this).loadUserPicture(mSelectedImageFileUri!!, iv_user_photo)
                     } catch (e: IOException){
                         e.printStackTrace()
                         Toast.makeText(this@UserProfileActivity,
@@ -142,5 +149,11 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
                 true
             }
         }
+    }
+
+    fun imageUploadSuccess(imageURL: String){
+        hideProgressDialog()
+        Toast.makeText(this@UserProfileActivity,
+        "Image uploaded successfully! Image uURL is $imageURL",Toast.LENGTH_SHORT).show()
     }
 }
