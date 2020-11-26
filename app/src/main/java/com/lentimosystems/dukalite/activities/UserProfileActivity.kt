@@ -4,9 +4,9 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat
 import com.lentimosystems.dukalite.R
 import com.lentimosystems.dukalite.models.User
 import com.lentimosystems.dukalite.utils.Constants
-import com.lentimosystems.dukalite.utils.DukaLiteEditText
+import com.lentimosystems.dukalite.utils.GlideLoader
 import kotlinx.android.synthetic.main.activity_user_profile.*
 import java.io.IOException
 
@@ -41,6 +41,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
         et_email!!.setText(userDetails.email)
 
         iv_user_photo.setOnClickListener(this@UserProfileActivity)
+        btn_submit.setOnClickListener(this@UserProfileActivity)
     }
 
     override fun onClick(v: View?) {
@@ -60,6 +61,12 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
                             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                             Constants.READ_STORAGE_PERMISSION_CODE
                         )
+                    }
+                }
+
+                R.id.btn_submit -> {
+                    if (validateUserProfileDetails()){
+                        showErrorSnackBar("Details updated successfully!",false)
                     }
                 }
             }
@@ -89,13 +96,26 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
                 if (data != null){
                     try {
                         val selectedImageFileUri = data.data!!
-                        iv_user_photo.setImageURI(selectedImageFileUri)
+                        //iv_user_photo.setImageURI(selectedImageFileUri)
+                        GlideLoader(this).loadUserPicture(selectedImageFileUri,iv_user_photo)
                     } catch (e: IOException){
                         e.printStackTrace()
                         Toast.makeText(this@UserProfileActivity,
                         resources.getString(R.string.image_selection_failed),Toast.LENGTH_SHORT).show()
                     }
                 }
+            }
+        } else if(resultCode == Activity.RESULT_CANCELED){
+            Log.e("Request cancelled","Image selection cancelled")
+        }
+    }
+    private fun validateUserProfileDetails(): Boolean{
+        return when {
+            TextUtils.isEmpty(et_mobile_number.text.toString().trim { it <= ' ' }) -> {
+                showErrorSnackBar(resources.getString(R.string.err_msg_enter_mobile_number),true)
+                false
+            } else -> {
+                true
             }
         }
     }
