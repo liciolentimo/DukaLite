@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.lentimosystems.dukalite.activities.LoginActivity
 import com.lentimosystems.dukalite.activities.RegisterActivity
+import com.lentimosystems.dukalite.activities.UserProfileActivity
 import com.lentimosystems.dukalite.models.User
 import com.lentimosystems.dukalite.utils.Constants
 
@@ -75,6 +76,27 @@ class FireStoreClass {
                         activity.hideProgressDialog()
                     }
                 }
+            }
+    }
+
+    fun updateUserProfileData(activity: Activity, userHashMap:HashMap<String, Any>){
+        mFireStore.collection(Constants.USERS).document(getCurrentUserId())
+            .update(userHashMap)
+            .addOnSuccessListener {
+                when(activity){
+                    is UserProfileActivity -> {
+                        //activity.hideProgressDialog()
+                        activity.userProfileUpdateSuccess()
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                when(activity){
+                    is UserProfileActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
+                Log.e(activity.javaClass.simpleName,"Error while updating user details",e)
             }
     }
 }

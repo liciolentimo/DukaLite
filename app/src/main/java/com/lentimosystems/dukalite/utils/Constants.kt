@@ -11,6 +11,10 @@ object Constants {
     const val EXTRA_USER_DETAILS: String ="extra_user_details"
     const val READ_STORAGE_PERMISSION_CODE = 2
     const val PICK_IMAGE_REQUEST_CODE = 1
+    const val MALE: String = "male"
+    const val FEMALE: String = "female"
+    const val MOBILE: String = "mobile"
+    const val GENDER: String = "gender"
 
     fun showImageChooser(activity: Activity){
         val galleryIntent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
