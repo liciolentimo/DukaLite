@@ -25,6 +25,7 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
     private lateinit var iv_user_photo: ImageView
     private lateinit var mUserDetails: User
     private var mSelectedImageFileUri: Uri? = null
+    private var mUSerProfileImageURL: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,30 +73,39 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
 
                 R.id.btn_submit -> {
 
-                    showProgressDialog(resources.getString(R.string.please_wait))
-                    FireStoreClass().uploadImageToCloudStorage(this, mSelectedImageFileUri)
-
-//                    if (validateUserProfileDetails()){
-//                        //showErrorSnackBar("Details updated successfully!",false)
-//                        val userHashMap = HashMap<String,Any>()
-//                        val mobileNumber = et_mobile_number.text.toString().trim { it <= ' ' }
-//                        val gender = if (rb_male.isChecked){
-//                            Constants.MALE
-//                        } else {
-//                            Constants.FEMALE
-//                        }
-//                        if (mobileNumber.isNotEmpty()){
-//                            userHashMap[Constants.MOBILE] = mobileNumber.toLong()
-//                        }
-//                        userHashMap[Constants.GENDER] = gender
-//
-//                        showProgressDialog(resources.getString(R.string.please_wait))
-//
-//                        FireStoreClass().updateUserProfileData(this, userHashMap)
-//                    }
+                    if (validateUserProfileDetails()){
+                        //showErrorSnackBar("Details updated successfully!",false)
+                        showProgressDialog(resources.getString(R.string.please_wait))
+                        if (mUSerProfileImageURL != null)
+                        FireStoreClass().uploadImageToCloudStorage(this, mSelectedImageFileUri)
+                        else {
+                            updateUserProfileDetails()
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private fun updateUserProfileDetails(){
+        val userHashMap = HashMap<String,Any>()
+        val mobileNumber = et_mobile_number.text.toString().trim { it <= ' ' }
+        val gender = if (rb_male.isChecked){
+            Constants.MALE
+        } else {
+            Constants.FEMALE
+        }
+        if (mUSerProfileImageURL.isNotEmpty()){
+            userHashMap[Constants.IMAGE] = mUSerProfileImageURL
+        }
+        if (mobileNumber.isNotEmpty()){
+            userHashMap[Constants.MOBILE] = mobileNumber.toLong()
+        }
+        userHashMap[Constants.GENDER] = gender
+
+        //showProgressDialog(resources.getString(R.string.please_wait))
+
+        FireStoreClass().updateUserProfileData(this, userHashMap)
     }
 
     fun userProfileUpdateSuccess(){
@@ -152,8 +162,10 @@ class UserProfileActivity : BaseActivity(), View.OnClickListener {
     }
 
     fun imageUploadSuccess(imageURL: String){
-        hideProgressDialog()
-        Toast.makeText(this@UserProfileActivity,
-        "Image uploaded successfully! Image uURL is $imageURL",Toast.LENGTH_SHORT).show()
+        //hideProgressDialog()
+//        Toast.makeText(this@UserProfileActivity,
+//        "Image uploaded successfully! Image uURL is $imageURL",Toast.LENGTH_SHORT).show()
+        mUSerProfileImageURL = imageURL
+        updateUserProfileDetails()
     }
 }

@@ -106,7 +106,7 @@ class FireStoreClass {
     fun uploadImageToCloudStorage(activity: Activity,imageFileUri:Uri?){
         val sRef: StorageReference = FirebaseStorage.getInstance().reference.child(
             Constants.USER_PROFILE_IMAGE + System.currentTimeMillis() + "."
-        + Constants.getFileExtension(activity, imageFileUri)
+                    + Constants.getFileExtension(activity, imageFileUri)
         )
         sRef.putFile(imageFileUri!!).addOnSuccessListener { taskSnapshot ->
             Log.e("Firebase image URL",taskSnapshot.metadata!!.reference!!.downloadUrl.toString())
